@@ -3,9 +3,15 @@
 import Link from 'next/link';
 
 export default function ListItem({ result }) {
+  const plainObjects = result.map((item) => {
+    const plainObject = { ...item };
+    delete plainObject.toJSON;
+    return plainObject;
+  });
+
   return (
     <div>
-      {result.map((item, index) => {
+      {plainObjects.map((item, index) => {
         return (
           <div className="list-item" key={index}>
             <Link prefetch={false} href={'/detail/' + item._id}>

@@ -1,6 +1,10 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
+import LoginButton from '@/components/loginButton';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import LogoutButton from '@/components/logoutButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -9,7 +13,11 @@ export const metadata = {
   description: 'Hg',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // 현재 로그인 정보 가져오기
+  const session = await getServerSession(authOptions);
+
+  // console.log(session);
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -18,7 +26,14 @@ export default function RootLayout({ children }) {
             Appleforum
           </Link>
           <Link href="/list">List</Link>
-        </div>{' '}
+          {session ? (
+            <span>
+              {session.user.name} <LogoutButton />
+            </span>
+          ) : (
+            <LoginButton />
+          )}
+        </div>
         {children}
       </body>
     </html>
